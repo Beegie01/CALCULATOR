@@ -8,8 +8,11 @@ class Calc:
 
 
     def prompt_num(self):
+        '''
+        take number input
+        '''
 
-        prompt = "\nPlease enter a number:\t"
+        prompt = "\nPlease enter a number\n:>\t"
 
         while True:
             inp = input(prompt)
@@ -22,9 +25,13 @@ class Calc:
             return str(num) + ' '
 
     def prompt_oper(self):
+        '''
+        take arithmetic operator input
+        '''
+
         print("\nPlease enter next operation below")
 
-        prompt = "To add: '+',\nTo subtract: '-',\nTo multiply: '*',\nTo divide: '/'\n"
+        prompt = "To add: '+',\nTo subtract: '-',\nTo multiply: '*',\nTo divide: '/'\n:>\t"
 
         acc_range = ['-', '+', '*', '/']
 
@@ -36,45 +43,45 @@ class Calc:
                 continue
             return inp + ' '
 
-    def check_for_nums(self):
-        if len(self.nums['numbers']) < 2:
-            return 'auto'
-        else:
-            return 'ask'
 
-    def calculate(self):
-        while True:
-            step = self.check_for_nums()
+    def compute(self):
 
-            if step == 'auto':
-                self.nums['numbers'].append(self.prompt_num())
-                continue
-            elif step == 'ask':
-                return self.replay()
+        # taking the first number
+        self.nums['numbers'].append(self.prompt_num())
 
-    def asking(self):
-        print("To continue, press enter\nTo see result, enter '='")
+        # taking the first operator
+        self.opers['arith_opers'].append(self.prompt_oper())
+
+        # taking the second number
+        self.nums['numbers'].append(self.prompt_num())
+
+
+    def ask_to_cont(self):
+        '''
+        to decide if to compute calculation so far
+        or input more numbers and operations
+        '''
+
+        print("\nTo continue, press enter\nFor result, enter '='")
         acc_range = ['', '=']
         while True:
-            inp = input()
+            inp = input(":>\t")
 
             if inp not in acc_range:
                 print(f"{inp} is invalid!")
                 continue
             return inp
 
-    def replay(self):
-        while True:
-            ans = self.asking()
 
-            if ans == '':
-                self.opers['arith_opers'].append(self.prompt_oper())
-                self.nums['numbers'].append(self.prompt_num())
-                continue
-            else:
-                return self.finalize()
+    def cont_calc(self):
+        '''
+        prompts user for operator first
+        followed by number
+        '''
+        self.opers['arith_opers'].append(self.prompt_oper())
+        self.nums['numbers'].append(self.prompt_num())
 
-    def finalize(self):
+    def show_answer(self):
 
         expr = ''
 
@@ -85,7 +92,30 @@ class Calc:
             expr += self.opers['arith_opers'][ind]
             continue
 
-        print(f"***********************************\
+        print('\n'*2, \
+        f"\n***********************************\
         \n{expr} = \
         \n{eval(expr)}\
         \n***********************************")
+
+    def ask_to_recalc(self):
+        print('\n'*2, \
+        "\nTo continue with the current calcaulation, enter 'c'\
+        \nTo perform a different calcaulation, enter 'd'\
+        \nTo exit, enter 'e'")
+
+        acc_range = ['e', 'c', 'd']
+        prompt = ":>\t"
+        while True:
+            inp = input(prompt)
+
+            if inp.lower() not in acc_range:
+                print("\nError!")
+                continue
+
+            return inp.lower()
+
+    def clear_rec(self):
+
+        self.nums['numbers'].clear()
+        self.opers['arith_opers'].clear()
